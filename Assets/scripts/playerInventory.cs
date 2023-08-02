@@ -11,6 +11,8 @@ public class playerInventory : MonoBehaviour
     public GameObject fisher;
 
     public Transform ItemContent;
+    public Transform sellItemContent;
+
     public GameObject InventoryItem;
 
     public Toggle toggleRemove;
@@ -34,10 +36,15 @@ public class playerInventory : MonoBehaviour
         
     }
     
+
+    
     public void Remove(Item item)
     {
         inventory.Remove(item);
     }
+
+
+
     public void getItem(Item item) //this adds the fish into the player inventory list!
     {
         inventory.Add(item);
@@ -63,19 +70,56 @@ public class playerInventory : MonoBehaviour
             var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
             var itemIcon = obj.transform.Find("itemIcon").GetComponent<Image>();
             var removeButton = obj.transform.Find("RemoveButton").gameObject;
+            var saleButton = obj.transform.Find("saleButton").gameObject;
+
+            Debug.Log("Item name = ", itemName);
+
+            itemName.text = item.nameID;
+            itemIcon.sprite = item.icon;
+            
+            saleButton.SetActive(false);
+
+
+                                              
+            if (toggleRemove.isOn)
+            {
+                removeButton.gameObject.SetActive(true);
+            }
+
+            
+        }
+
+        SetInventoryItems();
+    }
+
+    public void ListItemsForSale()
+    {
+        foreach(Transform item in sellItemContent) //cleans up inventory so items dont multiply when this is called
+        {
+            Destroy(item.gameObject);
+        }
+
+
+        foreach(Item item in inventory)
+        {
+            GameObject obj = Instantiate(InventoryItem, sellItemContent);
+            var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
+            var itemIcon = obj.transform.Find("itemIcon").GetComponent<Image>();
+            var itemWorth = obj.transform.Find("salePrice").gameObject;
+            var saleButton = obj.transform.Find("saleButton").gameObject;
 
             Debug.Log("Item name = ", itemName);
 
             itemName.text = item.nameID;
             itemIcon.sprite = item.icon;
 
-            if (toggleRemove.isOn)
-            {
-                removeButton.gameObject.SetActive(true);
-            }
+            saleButton.SetActive(true);
+            itemWorth.SetActive(true);
+
+           
         }
 
-        SetInventoryItems();
+        SetInventoryItemsPostSaleMenu();
     }
 
     public void EnableItemsRemove()
@@ -104,5 +148,20 @@ public class playerInventory : MonoBehaviour
         {
             inventoryItems[i].AddItem(inventory[i]);
         }
+
+        
     }
+
+    public void SetInventoryItemsPostSaleMenu()
+    {
+        inventoryItems = sellItemContent.GetComponentsInChildren<inventoryItemController>();
+        
+        for(int i = 0; i < inventory.Count; i++)
+        {
+            inventoryItems[i].AddItem(inventory[i]);
+        }
+
+        
+    }
+
 }

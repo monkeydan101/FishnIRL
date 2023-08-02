@@ -120,7 +120,7 @@ public class fishControler : MonoBehaviour
             fishingRod.SetActive(false);
         }
         
-
+        moneyCountText.text = moneyCount.ToString();
     }
 
 
@@ -214,6 +214,7 @@ public class fishControler : MonoBehaviour
 
     public void changeMoney(int amount)
     {
+        Debug.Log("item has been sold");
         moneyCount += amount;
     }
 }

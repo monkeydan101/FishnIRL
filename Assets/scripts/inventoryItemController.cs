@@ -6,11 +6,35 @@ using UnityEngine.UI;
 
 public class inventoryItemController : MonoBehaviour
 {
+
+
+
+
+
+
+
+    //THE PROBLEM:
+    //THE ITEMS ADDED LOSE THEIR REFERENCE TO THEIR ITEM DATA ONCE AN ITEM IS SOLD, I DONT KNOW WHY
+
+
+
+
+
+
+
+
+
+
+
     // Start is called before the first frame update
-    Item item;
+    public Item item;
+
+    public fishControler player;
+    
+
 
     public int itemWorth = 0;
-    [SerializeField] public TextMeshProUGUI itemWorthText;
+    public TextMeshProUGUI itemWorthText;
 
     public Button RemoveButton;
     public void RemoveItem()
@@ -23,12 +47,16 @@ public class inventoryItemController : MonoBehaviour
     public void AddItem(Item newItem)
     {
         item = newItem;
-        itemWorth = item.itemWorth;
-        itemWorthText.text = itemWorth.ToString();
+        itemWorthText.text = item.itemWorth.ToString();
+    }
+
+    public void sellItem(){
+        player.changeMoney(itemWorth);
     }
 
     private void Start()
     {
-        itemWorthText.gameObject.SetActive(false);
+        player = GameObject.Find("Fisher").GetComponent<fishControler>();
+        
     }
 }

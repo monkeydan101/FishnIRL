@@ -5,6 +5,11 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - pondTrout: {fileID: 11400000, guid: be0cdee191c38984f958ce3c6b228e63, type: 2}
+  - rainbowTrout: {fileID: 11400000, guid: fbafa1bbf5b1f8f4eb91cad46eceb2c3, type: 2}
+  - pickrel: {fileID: 11400000, guid: 354f4d4b7c2ad78418770b120ac51c8d, type: 2}
+  - snakehead: {fileID: 11400000, guid: bc66cec8f62ebd54e8cb21902f00042a, type: 2}
+  - walleye: {fileID: 11400000, guid: 5a637b7c56380424b894a77b4b8b2775, type: 2}
+  - starterRod: {fileID: 11400000, guid: 69f3054de96825a4991c1265a8383a65, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

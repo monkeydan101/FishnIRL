@@ -12,6 +12,10 @@ public class itemList : MonoBehaviour
     [SerializeField] public Item snakehead;
     [SerializeField] public Item walleye;
 
+    //GEAR ITEMS
+
+    [SerializeField] public Item starterRod;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +24,11 @@ public class itemList : MonoBehaviour
         items.Add(walleye);
         items.Add(snakehead);
         items.Add(pickrel);
+
+        //GEAR
+
+        
+        items.Add(starterRod);
     }
 
     // Update is called once per frame

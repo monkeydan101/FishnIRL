@@ -25,8 +25,10 @@ public class fishControler : MonoBehaviour
 
     [SerializeField] private Animator m_animator = null;
 
-    [SerializeField] public playerInventory inventory;
+    
     [SerializeField] public itemList itemsListObj;
+
+    
 
 
 
@@ -43,10 +45,25 @@ public class fishControler : MonoBehaviour
 
     public bool hookInWater;
 
-    public GameObject fishingRod;
+    
 
     public List<Item> items = new List<Item>();
 
+
+
+
+    //gear stats
+    public int hatLuck;
+    public int hatSkill;
+
+    public int rodLuck;
+    public int rodSkill;
+
+    //hear models
+    public GameObject currentHat = null;
+    public GameObject fishingRod;
+    
+    public bool rodEquipt = false;
 
     // Start is called before the first frame update
     void Start()
@@ -62,7 +79,27 @@ public class fishControler : MonoBehaviour
         hookInWater = false;
 
         fishingRod.SetActive(false);
+
+        rodEquipt = false;
+
+        
+
+
+
+        //giving the player starter items:
+        for(int i = 0; i < items.Count; i++) //this loop adds the right to the inventory
+        {
+            if(items[i].nameID == "starterRod")
+            {
+                playerInventory.Instance.getItem(items[i]); 
+                //inventory.getItem(items[i]);
+            }
+        }
     }
+
+
+
+
 
 
     public void setFishName(string name) //takes info from pond to make the name of the fish known to this program
@@ -80,7 +117,7 @@ public class fishControler : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("e") && touchingWater && fishOnTheLine && hookInWater)
+        if (Input.GetKeyDown("e") && touchingWater && fishOnTheLine && hookInWater && rodEquipt)
         {
             Debug.Log("hook up");
             
@@ -201,7 +238,8 @@ public class fishControler : MonoBehaviour
         {
             if(items[i].nameID == fishName)
             {
-                inventory.getItem(items[i]);
+                playerInventory.Instance.getItem(items[i]); 
+                //inventory.getItem(items[i]);
             }
         }
     }
@@ -212,6 +250,55 @@ public class fishControler : MonoBehaviour
 
 
 
+
+//gear methods
+    public void changeHat(Item newHat){
+        hatLuck = newHat.hatLuck;
+        hatSkill = newHat.hatSkill;
+
+        currentHat = newHat.hatModel;
+        fishingRod.SetActive(false);
+    }
+
+    public void changeRod(Item newRod){
+        rodLuck = newRod.rodLuck;
+        rodSkill = newRod.rodSkill;
+
+        fishingRod = newRod.rodModel;
+        currentHat.SetActive(true);
+
+        rodEquipt = true; //to make sure you can't fish without a rod equipt
+    }
+
+
+                 //for dequiping items!!
+    public void noHat(){
+        hatLuck = 0;
+        hatSkill = 0;
+
+        currentHat.SetActive(false);
+    }
+
+    public void noRod(){
+        rodLuck = 0;
+        rodSkill = 0;
+
+        fishingRod.SetActive(false);
+    }
+                    //   !!!
+
+
+
+    public int getSkillLvl(){            //this is to be used by the ponds to check if your skill level is high enough to fish in them
+        return (rodSkill + hatSkill);
+    }
+
+    public int getLuckLvl(){
+        return (rodLuck + hatLuck);
+    }
+
+
+//for moners
     public void changeMoney(int amount)
     {
         Debug.Log("item has been sold");

@@ -14,7 +14,8 @@ public class inventoryItemController : MonoBehaviour
 
     public fishControler player;
     
-
+    public bool isEquipt; //to keep track of if the item is equipt currently
+    
 
     public int itemWorth;
     public TextMeshProUGUI itemWorthText;
@@ -23,7 +24,7 @@ public class inventoryItemController : MonoBehaviour
 
     public void RemoveItem()
     {
-        playerInventory.Instance.Remove(item);
+        playerInventory.Instance.Remove(item); //removes from the list
         Destroy(gameObject);
 
         Debug.Log("removed item");

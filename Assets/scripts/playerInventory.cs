@@ -58,9 +58,10 @@ public class playerInventory : MonoBehaviour
 
 
     //TO-DO: 
-    //to fix the error with the item losing its reference to the item that is equipt:
-    //         - reference the inventoryItemController component in hetslot/rodslot in player inventory, set the item inside the controller using the 2 newest methods
-    //         - 
+    //to fix the error with the rod not equipting as intended:
+    //              for some reason the current rod loses the reference to the gameObject? maybe not instantiating right into the rod slot?
+    //              inventory item not deleting, even though the controller is being properally accsessed
+    //         -    also, using item.isEquipt DOES NOT WORK, it changes the scriptable object data instead of the instance of the object...
 
 
 
@@ -92,9 +93,7 @@ public class playerInventory : MonoBehaviour
         {
             Destroy(item.gameObject);
         }
-        //foreach(inventoryItemController item in inventoryItems){
-        //    Destroy(item.gameObject);
-        //}
+     
 
 
         foreach(Item item in inventory)
@@ -129,11 +128,6 @@ public class playerInventory : MonoBehaviour
         
     }
 
-/*
-    public void cleanControllerList(){
-        inventoryItems = null;
-    }
-*/
     public void ListItemsForSale()
     {
         foreach(Transform item in sellItemContent) //cleans up inventory so items dont multiply when this is called
@@ -231,20 +225,6 @@ IEnumerator waiterSeller()
         }
 
         
-
-
-
-
-        /*
-        //NEW PROPOSITION: clear the inventorycontroller array, then fill it using the items that are in item content, ASSIGN THEM the relevant item scriptableObjects
-
-        Array.Clear(inventoryItems, 0, inventoryItems.Length);
-
-        for(int i = 0; i < inventory.Count; i++)
-        {
-            inventoryItems[i] = inventory[i].gameObject.GetComponent<inventoryItemController>();
-        }
-        */
     }
 
     public void SetInventoryItemsPostSaleMenu()
@@ -271,7 +251,7 @@ IEnumerator waiterSeller()
                 dequiptHat(item);
             }
             else if(hatOn == false){ //equipt hat
-                StartCoroutine(waiterEquiptHat(item));
+                equiptHat(item);
                 
                 inventoryItemController controller = hatSlot.GetComponent<inventoryItemController>();
                 controller.RemoveItem();
@@ -283,36 +263,22 @@ IEnumerator waiterSeller()
        
         //COPY FOR ROD
         else if(item.isRod){
-            if(item.isEquipt){ //dequipt hat
+            Debug.Log("Fishing rod clicked");
+            if(item.isEquipt == true){ //dequipt rod
+            Debug.Log("Dequipting rod");
                 dequiptRod(item);
             }
-            else if(rodOn == false){ //equipt hat
-                StartCoroutine(waiterEquiptRod(item));
+            else if(rodOn == false){ //equipt rod
+                Debug.Log("Equiptiawng Rod");
+                equiptRod(item);
                 
-                inventoryItemController controller = rodSlot.GetComponent<inventoryItemController>();
+                inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
                 controller.RemoveItem();
             }
         }
 
     }
 
-    public IEnumerator waiterEquiptHat(Item item)
-{
-    //Rotate 90 deg
-    //Wait for 4 seconds
-    yield return new WaitForSeconds(0.1f);
-    equiptHat(item);
-
-}
-
-public IEnumerator waiterEquiptRod(Item item)
-{
-    //Rotate 90 deg
-    //Wait for 4 seconds
-    yield return new WaitForSeconds(0.1f);
-    equiptRod(item);
-
-}
 
 
     public void equiptHat(Item hat){
@@ -335,10 +301,14 @@ public IEnumerator waiterEquiptRod(Item item)
     
 
     public void dequiptHat(Item hat){
-        Destroy(currentHat);//removes item from hatslot
-        getItem(hat); //adds the item to the inventory
+        if(hat != null){
+            Destroy(currentHat);//removes item from hatslot
+            getItem(hat); //adds the item to the inventory
 
-        fisher.noHat();
+            fisher.noHat();
+
+            hat.isEquipt = false;
+        }
     }
 
 
@@ -347,7 +317,8 @@ public IEnumerator waiterEquiptRod(Item item)
         var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
         var itemIcon = obj.transform.Find("itemIcon").GetComponent<Image>();
 
-        currentRod = obj;
+       currentRod = obj;
+        
 
         Debug.Log("Item name = ", itemName);
 
@@ -361,10 +332,15 @@ public IEnumerator waiterEquiptRod(Item item)
 
 
     public void dequiptRod(Item rod){
-        Destroy(currentRod);//removes item from rodslot
-        getItem(rod); //adds the item to the inventory
+        if(rod != null){
+             Destroy(currentRod);//removes item from rodslot
+            getItem(rod); //adds the item to the inventory
 
-        fisher.noRod();
+            fisher.noRod();
+
+            rod.isEquipt = false;
+        }
+       
     }
 
     public Item giveRod(){

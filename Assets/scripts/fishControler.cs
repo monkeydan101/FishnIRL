@@ -117,7 +117,7 @@ public class fishControler : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("e") && touchingWater && fishOnTheLine && hookInWater && rodEquipt)
+        if (Input.GetKeyDown("e") && touchingWater && fishOnTheLine && hookInWater) //&& rod is equipt
         {
             Debug.Log("hook up");
             
@@ -265,7 +265,7 @@ public class fishControler : MonoBehaviour
         rodSkill = newRod.rodSkill;
 
         fishingRod = newRod.rodModel;
-        currentHat.SetActive(true);
+        fishingRod.SetActive(true);
 
         rodEquipt = true; //to make sure you can't fish without a rod equipt
     }

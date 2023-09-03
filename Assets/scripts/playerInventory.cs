@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using static UnityEditor.Progress;
+using Unity.VisualScripting;
 
 public class playerInventory : MonoBehaviour
 {
@@ -37,6 +39,9 @@ public class playerInventory : MonoBehaviour
 
     public List<Item> inventory = new List<Item>();
     // Start is called before the first frame update
+
+
+    public Vector3 screenPosition;
     private void Awake()
     {
         Instance = this;
@@ -49,21 +54,10 @@ public class playerInventory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        screenPosition = Input.mousePosition;
+        //Debug.Log(screenPosition.ToString());
     }
     
-
-
-
-
-
-    //TO-DO: 
-    //to fix the error with the rod not equipting as intended:
-    //              for some reason the current rod loses the reference to the gameObject? maybe not instantiating right into the rod slot?
-    //              inventory item not deleting, even though the controller is being properally accsessed
-    //         -    also, using item.isEquipt DOES NOT WORK, it changes the scriptable object data instead of the instance of the object...
-
-
 
 
 
@@ -93,10 +87,15 @@ public class playerInventory : MonoBehaviour
         {
             Destroy(item.gameObject);
         }
-     
+
+        foreach (Transform item in rodSlot) //cleans up rodSlot so items dont multiply when this is called
+        {
+            Destroy(item.gameObject);
+        }
 
 
-        foreach(Item item in inventory)
+
+        foreach (Item item in inventory)
         {
             GameObject obj = Instantiate(InventoryItem, ItemContent);
             var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
@@ -104,12 +103,14 @@ public class playerInventory : MonoBehaviour
             var removeButton = obj.transform.Find("RemoveButton").GetComponent<Button>();
             var salePrice = obj.transform.Find("salePrice").GetComponent<TMP_Text>();
 
-            Debug.Log("Item name = ", itemName);
+          
 
             itemName.text = item.nameID;
             itemIcon.sprite = item.icon;
+
             
-            
+
+
             salePrice.gameObject.SetActive(false);
 
                                               
@@ -120,12 +121,46 @@ public class playerInventory : MonoBehaviour
 
             
         }
-       
+
+
+        //  ROD ZONE!!!
+        if(currentRod != null)
+        {
+
+            currentRod = Instantiate(InventoryItem, rodSlot);
+            var itemName = currentRod.transform.Find("itemName").GetComponent<TMP_Text>();
+            var itemIcon = currentRod.transform.Find("itemIcon").GetComponent<Image>();
+
+
+
+            itemName.text = rodItem.nameID;
+            itemIcon.sprite = rodItem.icon;
+            
+            StartCoroutine(waiterRodSlot());
+        }
+            
+
+
+
+
+        //  !!!
+
+
+
+        //  hAT ZONE!!!
+
+
+
+
+
+        //  !!!
+
+
+
+
         StartCoroutine(waiter());
         Debug.Log("done waiting");
 
-
-        
     }
 
     public void ListItemsForSale()
@@ -164,8 +199,15 @@ public class playerInventory : MonoBehaviour
         Debug.Log("done waiting");
     }
 
-    
-    
+    IEnumerator waiterRodSlot() //just a coroutine to ease the stress of the list items function, used for setting the itemData of the equipted rod
+    {
+        
+        yield return new WaitForSeconds(0.1f);
+        inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
+        controller.setItem(rodItem);
+
+    }
+
     public void EnableItemsRemove()
     {
         Debug.Log("remove toggled");
@@ -245,43 +287,88 @@ IEnumerator waiterSeller()
 
 
 
-    public void itemClicked(Item item){ //for organizing gear interactions!
-        if(item.isHat){
-            if(item.isEquipt){ //dequipt hat
-                dequiptHat(item);
-            }
-            else if(hatOn == false){ //equipt hat
-                equiptHat(item);
-                
-                inventoryItemController controller = hatSlot.GetComponent<inventoryItemController>();
-                controller.RemoveItem();
 
-                
+
+    //TO DO: USE MOUSE POSITION TO DETERMINE IF THE ITEM CLICKED IS IN THE HAT/ROD AREA
+    //       THEN CHECK IF A HAT/ROD IS EQUIPT, THEN FIX DEQUIPT!!!!! 
+    public void itemClicked(Item item){ //for organizing gear interactions!
+        if(rodItem != null)
+        {
+            inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
+            controller.setItem(rodItem);
+            
+        }
+        if (item.isHat)
+        {
+            if((screenPosition.x > 600) && (screenPosition.x < 685) && (screenPosition.y > 230) && (screenPosition.y < 310)) //if hat is currently equipt and clicked --> dequipt!
+            {
+
+
+
+
             }
+            Debug.Log("Fishing hat clicked");
+
+
+
+            if (hatOn == true)
+            { //dequipt hat                           
+                Debug.Log("Dequipting hat");
+                dequiptHat(item);
+                equiptHat(item);
+            }
+            else if (hatOn == false)
+            { //equipt hat
+                Debug.Log("Equiptiawng Hat");
+                equiptHat(item);
+
+
+
+
+
+            }
+
+            inventory.Remove(item); //removes the item from the inventory list so when the inventory is generated the item wont be there
+
+
+
         }
 
-       
+
         //COPY FOR ROD
         else if(item.isRod){
-            Debug.Log("Fishing rod clicked");
-            if(item.isEquipt == true){ //dequipt rod
+
+            if ((screenPosition.x > 600) && (screenPosition.x < 685) && (screenPosition.y > 115) && (screenPosition.y < 185)) //if rod is currently equipt and clicked --> dequipt!
+            {
+                Debug.Log("Dequipting rod, rod clicked!!");
+                dequiptRod(item);
+            }       
+            
+            else if(rodOn == true){ //dequipt rod                           
             Debug.Log("Dequipting rod");
                 dequiptRod(item);
+                equiptRod(item);
+
+
+                inventory.Remove(item);
             }
             else if(rodOn == false){ //equipt rod
                 Debug.Log("Equiptiawng Rod");
                 equiptRod(item);
-                
-                inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
-                controller.RemoveItem();
+
+
+
+                inventory.Remove(item);
+
             }
+            
         }
 
     }
 
 
 
-    public void equiptHat(Item hat){
+    public void equiptHat(Item hat){                            //OLD CODE
         GameObject obj = Instantiate(InventoryItem, hatSlot);
         var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
         var itemIcon = obj.transform.Find("itemIcon").GetComponent<Image>();
@@ -296,49 +383,87 @@ IEnumerator waiterSeller()
     
             
         fisher.changeHat(hat); //changes the players stats
-        hat.isEquipt = true; //this tracks if the item is equipt so it may be removed later on
+
+
+        
         }
     
 
-    public void dequiptHat(Item hat){
+    public void dequiptHat(Item hat){    //OLD CODE
         if(hat != null){
-            Destroy(currentHat);//removes item from hatslot
+
+            //BELOW IS TESTED CODE TO CLEAR THE RODSLOT
+
+            
+
+
             getItem(hat); //adds the item to the inventory
 
             fisher.noHat();
 
-            hat.isEquipt = false;
+           
         }
     }
 
 
-    public void equiptRod(Item rod){
-        GameObject obj = Instantiate(InventoryItem, rodSlot);
-        var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
-        var itemIcon = obj.transform.Find("itemIcon").GetComponent<Image>();
+    public void equiptRod(Item rod){                                                               
+        Debug.Log("equipt called for rod");
+        currentRod = Instantiate(InventoryItem, rodSlot);
+        var itemName = currentRod.transform.Find("itemName").GetComponent<TMP_Text>();
+        var itemIcon = currentRod.transform.Find("itemIcon").GetComponent<Image>();
 
-       currentRod = obj;
+
+        rodItem = rod;
+
         
-
-        Debug.Log("Item name = ", itemName);
 
         itemName.text = rod.nameID;
         itemIcon.sprite = rod.icon;
             
             
-        fisher.changeRod(rod);
-        rod.isEquipt = true; 
+        fisher.changeRod(rod); //for changing stats
+        Debug.Log("done equipting");
+
+
+        //NEED TO ACCSESS THE CONTROLLER IN RODSLOT AND USE SETITEM ON IT TO MAKE IT REMEMBER THE ITEM DATA ITS HOLDING
+        inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
+        controller.setItem(rod);
+
+
+
+
+        //removes the item from the inventory after its moved into the rod slot/hat slot
+        foreach (Transform itemObjects in ItemContent)
+        {
+            var itemNameObj = itemObjects.transform.Find("itemName").GetComponent<TMP_Text>();
+            if (itemName.text == rod.nameID)
+            {
+                Destroy(itemObjects.gameObject);
+                Debug.Log("found and destroyed");
+            }
+            break;
+        }
     }
 
 
     public void dequiptRod(Item rod){
+
+        Debug.Log("dequipt called for rod");
         if(rod != null){
-             Destroy(currentRod);//removes item from rodslot
+
+            inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
+            controller.RemoveItem();
+
             getItem(rod); //adds the item to the inventory
 
             fisher.noRod();
 
-            rod.isEquipt = false;
+            currentRod = null;
+            rodOn = false;
+            rodItem = null;
+
+            ListItems();
+          
         }
        
     }

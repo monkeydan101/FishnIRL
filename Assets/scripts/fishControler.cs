@@ -61,7 +61,7 @@ public class fishControler : MonoBehaviour
 
     //hear models
     public GameObject currentHat = null;
-    public GameObject fishingRod;
+    public GameObject fishingRod = null;
     
     public bool rodEquipt = false;
 
@@ -79,6 +79,7 @@ public class fishControler : MonoBehaviour
         hookInWater = false;
 
         fishingRod.SetActive(false);
+        currentHat.SetActive(false);
 
         rodEquipt = false;
 
@@ -283,6 +284,7 @@ public class fishControler : MonoBehaviour
         rodLuck = 0;
         rodSkill = 0;
 
+        rodEquipt= false;
         fishingRod.SetActive(false);
     }
                     //   !!!

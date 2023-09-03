@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: starterRod
   m_EditorClassIdentifier: 
   nameID: starterRod
-  icon: {fileID: 21300000, guid: 6f6d03fc68d6a124cbad9a3b0aa1cacc, type: 3}
-  itemWorth: 10
+  icon: {fileID: 21300000, guid: f1959c867412b914195d2695e7e7ac0f, type: 3}
+  itemWorth: 100
   isHat: 0
   isRod: 1
   hatSkill: 0
@@ -22,5 +22,5 @@ MonoBehaviour:
   rodSkill: 1
   rodLuck: 1
   hatModel: {fileID: 0}
-  rodModel: {fileID: 8503191026582220969, guid: ae92bc581cddad145be231ded1f10ad6, type: 3}
+  rodModel: {fileID: 3538495362635662278, guid: 7c3fcdc93feaee74c860894134de8f07, type: 3}
   isEquipt: 0

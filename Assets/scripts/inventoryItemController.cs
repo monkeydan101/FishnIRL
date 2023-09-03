@@ -13,8 +13,8 @@ public class inventoryItemController : MonoBehaviour
     public Item item;
 
     public fishControler player;
+
     
-    public bool isEquipt; //to keep track of if the item is equipt currently
     
 
     public int itemWorth;
@@ -47,6 +47,11 @@ public class inventoryItemController : MonoBehaviour
     public void itemClicked(){
         Debug.Log("item in inventory clicked");
         playerInventory.Instance.itemClicked(item);
+    }
+
+    public void setItem(Item newItem)
+    {
+        item = newItem;
     }
 
     private void Start()

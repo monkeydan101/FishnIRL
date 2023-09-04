@@ -27,4 +27,7 @@ public class Item : ScriptableObject
     public GameObject rodModel;
 
     public bool isEquipt;
+
+
+    public Mesh mesh;
 }

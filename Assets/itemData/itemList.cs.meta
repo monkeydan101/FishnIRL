@@ -9,6 +9,7 @@ MonoImporter:
   - pickrel: {fileID: 11400000, guid: 354f4d4b7c2ad78418770b120ac51c8d, type: 2}
   - snakehead: {fileID: 11400000, guid: bc66cec8f62ebd54e8cb21902f00042a, type: 2}
   - walleye: {fileID: 11400000, guid: 5a637b7c56380424b894a77b4b8b2775, type: 2}
+  - starterHat: {fileID: 11400000, guid: 44e064449182b4a4fa45d5e9939b76ca, type: 2}
   - starterRod: {fileID: 11400000, guid: 2fb8a3077088be64990ceda27b8756c9, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}

@@ -38,7 +38,11 @@ public class playerInventory : MonoBehaviour
     public inventoryItemController[] inventoryItems;
 
     public List<Item> inventory = new List<Item>();
-    // Start is called before the first frame update
+    
+
+
+    public rodSystem rodHandler; //for changing the physical appearance of the rod
+    public hatSystem hatHandler; //for changing the physical appearance of the hat
 
 
     public Vector3 screenPosition;
@@ -93,6 +97,11 @@ public class playerInventory : MonoBehaviour
             Destroy(item.gameObject);
         }
 
+        foreach (Transform item in hatSlot) //cleans up rodSlot so items dont multiply when this is called
+        {
+            Destroy(item.gameObject);
+        }
+
 
 
         foreach (Item item in inventory)
@@ -138,22 +147,28 @@ public class playerInventory : MonoBehaviour
             
             StartCoroutine(waiterRodSlot());
         }
-            
-
-
-
-
-        //  !!!
 
 
 
         //  hAT ZONE!!!
+        if (currentHat != null)
+        {
+
+            currentHat = Instantiate(InventoryItem, hatSlot);
+            var itemName = currentHat.transform.Find("itemName").GetComponent<TMP_Text>();
+            var itemIcon = currentHat.transform.Find("itemIcon").GetComponent<Image>();
+
+
+
+            itemName.text = hatItem.nameID;
+            itemIcon.sprite =hatItem.icon;
+
+            StartCoroutine(waiterHatSlot());
+        }
 
 
 
 
-
-        //  !!!
 
 
 
@@ -205,6 +220,15 @@ public class playerInventory : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
         controller.setItem(rodItem);
+
+    }
+
+    IEnumerator waiterHatSlot() //just a coroutine to ease the stress of the list items function, used for setting the itemData of the equipted rod
+    {
+
+        yield return new WaitForSeconds(0.1f);
+        inventoryItemController controller = hatSlot.GetComponentInChildren<inventoryItemController>();
+        controller.setItem(hatItem);
 
     }
 
@@ -292,50 +316,55 @@ IEnumerator waiterSeller()
     //TO DO: USE MOUSE POSITION TO DETERMINE IF THE ITEM CLICKED IS IN THE HAT/ROD AREA
     //       THEN CHECK IF A HAT/ROD IS EQUIPT, THEN FIX DEQUIPT!!!!! 
     public void itemClicked(Item item){ //for organizing gear interactions!
-        if(rodItem != null)
+        
+        if(rodItem != null) //this code reminds rod slot of the item data (mostly as a precaution incase the data is somehow lost in heavy functions
         {
             inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
             controller.setItem(rodItem);
             
         }
+
+        if (hatItem != null) //same as above but for the hat
+        {
+            inventoryItemController controller = hatSlot.GetComponentInChildren<inventoryItemController>();
+            controller.setItem(hatItem);
+
+        }
+
         if (item.isHat)
         {
             if((screenPosition.x > 600) && (screenPosition.x < 685) && (screenPosition.y > 230) && (screenPosition.y < 310)) //if hat is currently equipt and clicked --> dequipt!
             {
-
-
-
-
+                Debug.Log("Dequipting hat, hat clicked!!");
+                dequiptHat(item);
             }
-            Debug.Log("Fishing hat clicked");
 
-
-
-            if (hatOn == true)
-            { //dequipt hat                           
+            else if (hatOn == true)
+            { //dequipt hat, replace it                      
                 Debug.Log("Dequipting hat");
                 dequiptHat(item);
                 equiptHat(item);
+
+
+                inventory.Remove(item);
             }
             else if (hatOn == false)
             { //equipt hat
-                Debug.Log("Equiptiawng Hat");
+                Debug.Log("Equiptiawng Hat, empty slot");
                 equiptHat(item);
 
 
 
-
+                inventory.Remove(item);
 
             }
-
-            inventory.Remove(item); //removes the item from the inventory list so when the inventory is generated the item wont be there
 
 
 
         }
 
 
-        //COPY FOR ROD
+       
         else if(item.isRod){
 
             if ((screenPosition.x > 600) && (screenPosition.x < 685) && (screenPosition.y > 115) && (screenPosition.y < 185)) //if rod is currently equipt and clicked --> dequipt!
@@ -344,7 +373,7 @@ IEnumerator waiterSeller()
                 dequiptRod(item);
             }       
             
-            else if(rodOn == true){ //dequipt rod                           
+            else if(rodOn == true){ //dequipt rod,, replace it                          
             Debug.Log("Dequipting rod");
                 dequiptRod(item);
                 equiptRod(item);
@@ -368,45 +397,76 @@ IEnumerator waiterSeller()
 
 
 
-    public void equiptHat(Item hat){                            //OLD CODE
-        GameObject obj = Instantiate(InventoryItem, hatSlot);
-        var itemName = obj.transform.Find("itemName").GetComponent<TMP_Text>();
-        var itemIcon = obj.transform.Find("itemIcon").GetComponent<Image>();
+    public void equiptHat(Item hat){                  
+        Debug.Log("equipt called for hat");
+        currentHat = Instantiate(InventoryItem, hatSlot);
+        var itemName = currentHat.transform.Find("itemName").GetComponent<TMP_Text>();
+        var itemIcon = currentHat.transform.Find("itemIcon").GetComponent<Image>();
 
-        currentHat = obj;
 
-        Debug.Log("Item name = ", itemName);
+        hatItem = hat;
+
+
 
         itemName.text = hat.nameID;
         itemIcon.sprite = hat.icon;
-            
-    
-            
-        fisher.changeHat(hat); //changes the players stats
 
 
-        
+        fisher.changeHat(hat); //for changing stats
+        Debug.Log("done equipting");
+
+
+        //NEED TO ACCSESS THE CONTROLLER IN RODSLOT AND USE SETITEM ON IT TO MAKE IT REMEMBER THE ITEM DATA ITS HOLDING
+        inventoryItemController controller = hatSlot.GetComponentInChildren<inventoryItemController>();
+        controller.setItem(hat);
+
+
+
+
+        //removes the item from the inventory after its moved into the rod slot/hat slot
+        foreach (Transform itemObjects in ItemContent)
+        {
+            var itemNameObj = itemObjects.transform.Find("itemName").GetComponent<TMP_Text>();
+            if (itemName.text == hat.nameID)
+            {
+                Destroy(itemObjects.gameObject);
+                Debug.Log("found hat and destroyed");
+            }
+            break;
         }
-    
 
-    public void dequiptHat(Item hat){    //OLD CODE
-        if(hat != null){
+        hatHandler.changeHat(hat);
 
-            //BELOW IS TESTED CODE TO CLEAR THE RODSLOT
+    }
 
-            
 
+    public void dequiptHat(Item hat)
+    {    //OLD CODE
+
+        Debug.Log("dequipt called for hat");
+        if (hat != null)
+        {
+
+            inventoryItemController controller = hatSlot.GetComponentInChildren<inventoryItemController>();
+            controller.RemoveItem();
 
             getItem(hat); //adds the item to the inventory
 
             fisher.noHat();
 
-           
+            currentHat = null;
+            hatOn = false;
+            hatItem = null;
+
+            ListItems();
+
+
+            hatHandler.changeHat(null);
         }
     }
 
 
-    public void equiptRod(Item rod){                                                               
+        public void equiptRod(Item rod){                                                               
         Debug.Log("equipt called for rod");
         currentRod = Instantiate(InventoryItem, rodSlot);
         var itemName = currentRod.transform.Find("itemName").GetComponent<TMP_Text>();
@@ -443,6 +503,8 @@ IEnumerator waiterSeller()
             }
             break;
         }
+
+        rodHandler.changeRod(rod);
     }
 
 

@@ -64,6 +64,9 @@ public class fishControler : MonoBehaviour
     public GameObject fishingRod = null;
     
     public bool rodEquipt = false;
+    public bool hatEquipt = false;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -82,7 +85,7 @@ public class fishControler : MonoBehaviour
         currentHat.SetActive(false);
 
         rodEquipt = false;
-
+        hatEquipt = false;
         
 
 
@@ -93,6 +96,12 @@ public class fishControler : MonoBehaviour
             if(items[i].nameID == "starterRod")
             {
                 playerInventory.Instance.getItem(items[i]); 
+                //inventory.getItem(items[i]);
+            }
+
+            else if (items[i].nameID == "starterHat")
+            {
+                playerInventory.Instance.getItem(items[i]);
                 //inventory.getItem(items[i]);
             }
         }
@@ -258,7 +267,7 @@ public class fishControler : MonoBehaviour
         hatSkill = newHat.hatSkill;
 
         currentHat = newHat.hatModel;
-        fishingRod.SetActive(false);
+        currentHat.SetActive(true);
     }
 
     public void changeRod(Item newRod){

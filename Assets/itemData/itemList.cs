@@ -11,6 +11,7 @@ public class itemList : MonoBehaviour
     [SerializeField] public Item pickrel;
     [SerializeField] public Item snakehead;
     [SerializeField] public Item walleye;
+    [SerializeField] public Item starterHat;
 
     //GEAR ITEMS
 
@@ -24,11 +25,17 @@ public class itemList : MonoBehaviour
         items.Add(walleye);
         items.Add(snakehead);
         items.Add(pickrel);
+        
 
         //GEAR
 
-        
+        //rods
         items.Add(starterRod);
+
+
+
+        //hats
+        items.Add(starterHat);
     }
 
     // Update is called once per frame

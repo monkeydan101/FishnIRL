@@ -61,7 +61,7 @@ public class fishControler : MonoBehaviour
 
     //hear models
     public GameObject currentHat = null;
-    public GameObject fishingRod;
+    public GameObject fishingRod = null;
     
     public bool rodEquipt = false;
     public bool hatEquipt = false;
@@ -93,13 +93,13 @@ public class fishControler : MonoBehaviour
         //giving the player starter items:
         for(int i = 0; i < items.Count; i++) //this loop adds the right to the inventory
         {
-            if(items[i].nameID == "starterHat")
+            if(items[i].nameID == "starterRod")
             {
                 playerInventory.Instance.getItem(items[i]); 
                 //inventory.getItem(items[i]);
             }
 
-            else if (items[i].nameID == "starterRod")
+            else if (items[i].nameID == "starterHat")
             {
                 playerInventory.Instance.getItem(items[i]);
                 //inventory.getItem(items[i]);

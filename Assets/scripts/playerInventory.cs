@@ -310,7 +310,10 @@ IEnumerator waiterSeller()
     }
 
 
-
+    public void refreshInventory(){
+        SetInventoryItems();
+        ListItems();
+    }
 
 
     //TO DO: USE MOUSE POSITION TO DETERMINE IF THE ITEM CLICKED IS IN THE HAT/ROD AREA
@@ -425,19 +428,22 @@ IEnumerator waiterSeller()
 
         //removes the item from the inventory after its moved into the rod slot/hat slot
         foreach (Transform itemObjects in ItemContent)
-        {
-            var itemNameObj = itemObjects.transform.Find("itemName").GetComponent<TMP_Text>();
-            if (itemName.text == hat.nameID)
             {
-                Destroy(itemObjects.gameObject);
-                Debug.Log("found hat and destroyed");
+                var itemNameObj = itemObjects.transform.Find("itemName").GetComponent<TMP_Text>();
+                    Debug.Log("itemNameObj.text = " + itemNameObj.text + " --- hat.nameID " + hat.nameID);
+                    if (itemNameObj.text == hat.nameID)                                                //Problem: for some reason not detecting the item to remove in the inventory
+                        {
+                            Destroy(itemObjects.gameObject);
+                            Debug.Log("found and destroyed");
+                        }
+                break;
             }
-            break;
-        }
 
         hatHandler.changeHat(hat);
+        
 
     }
+
 
 
     public void dequiptHat(Item hat)
@@ -467,44 +473,47 @@ IEnumerator waiterSeller()
 
 
         public void equiptRod(Item rod){                                                               
-        Debug.Log("equipt called for rod");
-        currentRod = Instantiate(InventoryItem, rodSlot);
-        var itemName = currentRod.transform.Find("itemName").GetComponent<TMP_Text>();
-        var itemIcon = currentRod.transform.Find("itemIcon").GetComponent<Image>();
+            Debug.Log("equipt called for rod");
+            currentRod = Instantiate(InventoryItem, rodSlot);
+            var itemName = currentRod.transform.Find("itemName").GetComponent<TMP_Text>();
+            var itemIcon = currentRod.transform.Find("itemIcon").GetComponent<Image>();
 
 
-        rodItem = rod;
+            rodItem = rod;
 
-        
-
-        itemName.text = rod.nameID;
-        itemIcon.sprite = rod.icon;
             
-            
-        fisher.changeRod(rod); //for changing stats
-        Debug.Log("done equipting");
+
+            itemName.text = rod.nameID;
+            itemIcon.sprite = rod.icon;
+                
+                
+            fisher.changeRod(rod); //for changing stats
+            Debug.Log("done equipting");
 
 
-        //NEED TO ACCSESS THE CONTROLLER IN RODSLOT AND USE SETITEM ON IT TO MAKE IT REMEMBER THE ITEM DATA ITS HOLDING
-        inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
-        controller.setItem(rod);
+            //NEED TO ACCSESS THE CONTROLLER IN RODSLOT AND USE SETITEM ON IT TO MAKE IT REMEMBER THE ITEM DATA ITS HOLDING
+            inventoryItemController controller = rodSlot.GetComponentInChildren<inventoryItemController>();
+            controller.setItem(rod);
 
 
 
 
-        //removes the item from the inventory after its moved into the rod slot/hat slot
-        foreach (Transform itemObjects in ItemContent)
-        {
-            var itemNameObj = itemObjects.transform.Find("itemName").GetComponent<TMP_Text>();
-            if (itemName.text == rod.nameID)
+            //removes the item from the inventory after its moved into the rod slot/hat slot
+            foreach (Transform itemObjects in ItemContent)
             {
-                Destroy(itemObjects.gameObject);
-                Debug.Log("found and destroyed");
+                var itemNameObj = itemObjects.transform.Find("itemName").GetComponent<TMP_Text>();
+                    Debug.Log("itemNameObj.text = " + itemNameObj.text + " --- rod.nameID " + rod.nameID);
+                    if (itemNameObj.text == rod.nameID)                                                //Problem: for some reason not detecting the item to remove in the inventory
+                        {
+                            Destroy(itemObjects.gameObject);
+                            Debug.Log("found and destroyed");
+                        }
+                break;
             }
-            break;
-        }
 
-        rodHandler.changeRod(rod);
+            rodHandler.changeRod(rod);
+
+            
     }
 
 

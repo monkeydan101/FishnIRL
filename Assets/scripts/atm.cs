@@ -10,12 +10,9 @@ public class atm : MonoBehaviour
 
     public fishControler player;
     public GameObject sellMenu;
-    public GameObject buyMenu;
     [SerializeField] public TextMeshProUGUI moneyCountText;
-    [SerializeField] public TextMeshProUGUI moneyCountText2;
 
     public bool sellStatus;
-    public bool buyStatus;
 
     // Start is called before the first frame update
     void Start()
@@ -24,14 +21,12 @@ public class atm : MonoBehaviour
 
         sellMenu.SetActive(false);
         sellStatus = false;
-        buyStatus = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         moneyCountText.text = player.moneyCount.ToString();
-        moneyCountText2.text = player.moneyCount.ToString();
     }
 
     private void OnTriggerEnter(Collider col)
@@ -58,21 +53,6 @@ public class atm : MonoBehaviour
         else{
             sellMenu.SetActive(true);
             sellStatus = true;
-        }
-    }
-
-    public void toggleBuyMenu()
-    {
-
-        if (buyStatus)
-        {
-            buyMenu.SetActive(false);
-            buyStatus = false;
-        }
-        else
-        {
-            buyMenu.SetActive(true);
-            buyStatus = true;
         }
     }
 }

@@ -93,13 +93,15 @@ public class fishControler : MonoBehaviour
         //giving the player starter items:
         for(int i = 0; i < items.Count; i++) //this loop adds the right to the inventory
         {
-            if(items[i].nameID == "starterRod")
+         
+
+            if (items[i].nameID == "starterHat")
             {
-                playerInventory.Instance.getItem(items[i]); 
+                playerInventory.Instance.getItem(items[i]);
                 //inventory.getItem(items[i]);
             }
 
-            else if (items[i].nameID == "starterHat")
+            else if (items[i].nameID == "starterRod")
             {
                 playerInventory.Instance.getItem(items[i]);
                 //inventory.getItem(items[i]);

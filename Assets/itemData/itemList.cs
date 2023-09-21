@@ -30,12 +30,17 @@ public class itemList : MonoBehaviour
         //GEAR
 
         //rods
-        items.Add(starterRod);
+        
 
 
 
         //hats
         items.Add(starterHat);
+
+
+
+        //rods
+        items.Add(starterRod);
     }
 
     // Update is called once per frame

@@ -270,11 +270,16 @@ IEnumerator waiterSeller()
 
 }
 
+    IEnumerator waiterReloadInventory() //just a coroutine to ease the stress of the list items function, used for setting the itemData of the equipted rod
+    {
+        yield return new WaitForSeconds(0.1f);
+        ListItems();
+
+    }
 
 
 
-
-    public void SetInventoryItems()
+        public void SetInventoryItems()
     {
         //the problem is somewhere in this method, when its called its adding duplicate items
         //its doubling because the item stored in inventory is losing its reference to the item data
@@ -436,9 +441,11 @@ IEnumerator waiterSeller()
         }
 
         hatHandler.changeHat(hat);
+        StartCoroutine(waiterReloadInventory());
 
     }
 
+    
 
     public void dequiptHat(Item hat)
     {    //OLD CODE
@@ -505,6 +512,7 @@ IEnumerator waiterSeller()
         }
 
         rodHandler.changeRod(rod);
+        StartCoroutine(waiterReloadInventory());
     }
 
 
